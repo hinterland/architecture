@@ -1,0 +1,41 @@
+extends layout
+
+block header
+  script(src='/javascripts/jquery.js')
+
+block content
+  h1 So whats up?
+
+  div
+    form#formPost(name="post",method="post",action="/posts")
+      textarea#inputPostText(rows = 4, cols = 80, placeholder="What's on your mind...", name="posttext")
+  div
+    button#btnSubmit(type="button", name="postbutton") Post
+
+  h1= title
+  
+  div#posts
+    each post in posts
+      div
+        = post.text
+      div
+        = post.createdAt.toUTCString()
+      div &nbsp
+  
+  script(type='text/javascript').
+    $(document).ready(function(){
+      $('#btnSubmit').click(function(){
+        $.post( "/posts", $( "#formPost" ).serialize(), function(data){
+          //alert("Success");
+          $('#posts').prepend('<div>' + $('#inputPostText').val() + '</div><div>' + data.date + '</div><div>&nbsp;</div>');
+          $('#inputPostText').val('');
+        })
+        .done(function() {
+          //
+        })
+        .fail(function() {
+          //
+          alert("Error");
+        });
+      })
+    });
